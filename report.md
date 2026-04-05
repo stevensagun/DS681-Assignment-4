@@ -8,6 +8,14 @@ In the original LLaVa, the images should be of resolution 224 X 224 for the visi
 
 ### Vision Encoder
 
-The vision encoder used for the original LLaVa is [CLIP ViT-L/14](https://huggingface.co/openai/clip-vit-large-patch14). This was later swapped to CLIP ViT-L-336px in 1.5 to support resolutions up to 336 x 336.
+The vision encoder used for the original LLaVa is [CLIP ViT-L/14](https://huggingface.co/openai/clip-vit-large-patch14). This was later swapped to CLIP ViT-L-336px in version 1.5 to support resolutions up to 336 x 336. The vision encoder is frozen during training.
 
-CLIP is a contrastive learning model.
+CLIP is a contrastive learning model. During pretraining, it takes in image-text pairs as inputs. The text is typically a description or a caption of the image. CLIP contains ViT and a transformer. Every image and text is fed into ViT and transformer, respectively, generating embeddings for both. It's important to note that both embeddings are in the same embedding space. This allows the model to compare the embddings of the images and text using cosine similary. The model learns by maximizing the cosine simiarity of true pairs embeddings while minimizing the cosine simiarity of negative pairs. 
+
+### Projection Layer
+
+In verision 1, a liner layer projects the embeddings from CLIP to the same embedding space as the transformer's embedding. In version 1.5, an MLP is used.
+
+### Lnaguage Model Input
+
+The languag model takes the projected image embeddings from the projection layer and the embeddings from the transforer.
