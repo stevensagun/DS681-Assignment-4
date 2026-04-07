@@ -14,8 +14,9 @@ CLIP is a contrastive learning model. During pretraining, it takes in image-text
 
 ### Projection Layer
 
-In verision 1, a liner layer projects the embeddings from CLIP to the same embedding space as the transformer's embedding. In version 1.5, an MLP is used.
+In order for the language model to process the visual features of the image, the visual features need to be projected to the same embeddings space as the word embeddings. In version 1, a linear layer projects the features from CLIP to the same embedding space as the word embedding. In version 1.5, an MLP is used. These embeddings a concatenated and fed to the langauge model.
 
-### Lnaguage Model Input
+### Language Model Input & Text Generation
 
-The languag model takes the projected image embeddings from the projection layer and the embeddings from the transforer.
+The language model takes the projected image embeddings from the projection layer and the embeddings from the word embedding layer. In LLaVa, it's Vicuna, a LLaMa fine-tune on conversation data. As mentioned in the projection layer, the image feature embeddings are concatenated with the word embeddings and passed to the Vicuna. Vicuna's self-attention mechanism works across these embeddings and ultimately generate text output using its decoder. 
+
