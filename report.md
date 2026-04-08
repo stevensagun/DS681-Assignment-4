@@ -20,3 +20,6 @@ In order for the language model to process the visual features of the image, the
 
 The language model takes the projected image embeddings from the projection layer and the embeddings from the word embedding layer. In LLaVa, it's Vicuna, a LLaMa fine-tune on conversation data. As mentioned in the projection layer, the image feature embeddings are concatenated with the word embeddings and passed to the Vicuna. Vicuna's self-attention mechanism works across these embeddings and ultimately generate text output using its decoder. 
 
+# Task 1.2: Projection Layer Intuition
+
+As mentioned, the vision features from CLIP may be in a different embedding space than the language model allows. In order to match the required dimension the language model needs and to be in the same embedding space as the text embeddings, a projection layer is introduced. In LLaVa v1, it's a linear layer. In LLaVa v1.5, it's replaced by an MLP. The linear layer and MLP work because of it's ability to project the vision features to a new embedding space. In this case, the new embedding space matches the text embeddings space. If the alignment is poor, meaning the projection layer fails to learn a good conversion from the vision feature space to the text embedding space, it may lose or distort vision feature information which that could affect downstream performance. 
