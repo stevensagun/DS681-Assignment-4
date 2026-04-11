@@ -12,11 +12,11 @@ In the original LLaVa, the images should be of resolution 224 X 224 for the visi
 
 The vision encoder used for the original LLaVa is [CLIP ViT-L/14](https://huggingface.co/openai/clip-vit-large-patch14). This was later swapped to CLIP ViT-L-336px in version 1.5 to support resolutions up to 336 x 336. The vision encoder is frozen during training.
 
-CLIP is a contrastive learning model. During pretraining, it takes in image-text pairs as inputs. The text is typically a description or a caption of the image. CLIP contains ViT and a transformer. Every image and text is fed into ViT and transformer, respectively, generating embeddings for both. It's important to note that both embeddings are in the same embedding space. This allows the model to compare the embddings of the images and text using cosine similary. The model learns by maximizing the cosine simiarity of true pairs embeddings while minimizing the cosine simiarity of negative pairs.
+CLIP is a contrastive learning model. During pretraining, it takes in image-text pairs as inputs. The text is typically a description or a caption of the image. CLIP contains ViT and a transformer. Every image and text is fed into ViT and transformer, respectively, generating embeddings for both. It's important to note that both embeddings are in the same embedding space. This allows the model to compare the embeddings of the images and text using cosine similarity. The model learns by maximizing the cosine similarity of true pairs embeddings while minimizing the cosine similarity of negative pairs.
 
 ### Projection Layer
 
-In order for the language model to process the visual features of the image, the visual features need to be projected to the same embeddings space as the word embeddings. In version 1, a linear layer projects the features from CLIP to the same embedding space as the word embedding. In version 1.5, an MLP is used. These embeddings a concatenated and fed to the langauge model.
+In order for the language model to process the visual features of the image, the visual features need to be projected to the same embeddings space as the word embeddings. In version 1, a linear layer projects the features from CLIP to the same embedding space as the word embedding. In version 1.5, an MLP is used. These embeddings a concatenated and fed to the language model.
 
 ### Language Model Input & Text Generation
 
@@ -34,8 +34,16 @@ The reason why they use a simple projection is because it's lightweight and is q
 
 ## Task 2.1: Two-Stage Training
 
-There are two stages to training: feature alignment and visual instruction tuning. For feature alignment, the projection layer learns to project the visual embeddings to the same embedding space as the text embeddings while keeping the same meaning. For the visual instruction tuning, the language model learns to 
+There are two stages to training: feature alignment and visual instruction tuning. For feature alignment, the projection layer learns to project the visual embeddings to the same embedding space as the text embeddings while keeping the same meaning. For the visual instruction tuning, the language model learns to
 
 ## Task 2.2: Synthetic Data
 
-The reason why synthetic data was used was because the amount of instruction-following data was limited and manually creating such as dataset would be time consuming. In order to create consistent and well-defined data, text only GPT4 or ChatGPT. However, this may introduce some biases. Every LLM typically has a cut-off point of what gets included in the training data. This could include out-of-date, incorrect or skewed information. These issues may show in the synthetic data. As a result, limits generalization.
+The reason why synthetic data was used was because the amount of instruction-following data was limited and manually creating such as dataset would be time consuming. In order to create consistent and well-defined data, text only GPT4 or ChatGPT. However, this may introduce some biases. Every LLM typically has a cut-off point of what gets included in the training data. This could include out-of-date, incorrect or skewed information. These issues may show in the synthetic data and, as a result, limits generalization.
+
+# Part 3 — Reflection
+
+1. LLaVa is technically multi-modal since it able to process both image and text. However, the language model inside is conditioned on the visual features.
+
+2. Alignment happens in the projection layer.
+
+3. There are a few limitations to LLaVa's architecture. The biggest limitation is that the visual feature embeddings and text embeddings are concatenated and then fed to the language model. A stronger approach would be to use gated cross-attention as mentioned in the paper. With gated cross-attention, it learn how text can attend to different visual features and by how much. It allows the model to focus on visual features that are most relevant based on the prompt. This may result in the output not being grounded to specific parts of the image. Other limitations include using full image patches, it cannot process multiple images due to lack of instruction-following data and the limit of the context length, problem-solving capabilities are limited in some domains, and is still susceptible to hallucinations.
