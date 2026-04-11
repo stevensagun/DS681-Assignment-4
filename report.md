@@ -33,3 +33,9 @@ The reason why they use a simple projection is because it's lightweight and is q
 # Part 2 — Training Pipeline
 
 ## Task 2.1: Two-Stage Training
+
+There are two stages to training: feature alignment and visual instruction tuning. For feature alignment, the projection layer learns to project the visual embeddings to the same embedding space as the text embeddings while keeping the same meaning. For the visual instruction tuning, the language model learns to 
+
+## Task 2.2: Synthetic Data
+
+The reason why synthetic data was used was because the amount of instruction-following data was limited and manually creating such as dataset would be time consuming. In order to create consistent and well-defined data, text only GPT4 or ChatGPT. However, this may introduce some biases. Every LLM typically has a cut-off point of what gets included in the training data. This could include out-of-date, incorrect or skewed information. These issues may show in the synthetic data. As a result, limits generalization.
