@@ -22,7 +22,7 @@ In order for the language model to process the visual features of the image, the
 
 The language model takes the projected image embeddings from the projection layer and the embeddings from the word embedding layer. In LLaVA, it's Vicuna, a LLaMa fine-tune on conversation data. As mentioned in the projection layer, the image feature embeddings are concatenated with the word embeddings and passed to the Vicuna. Vicuna's self-attention mechanism works across these embeddings and ultimately generates text output.
 
-![LLaVA Diagram](LLaV.drawio.png)
+![LLaVA Diagram](LLaVa.drawio.png)
 
 ## Task 1.2: Projection Layer Intuition
 
