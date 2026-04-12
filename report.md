@@ -6,7 +6,7 @@ LLaVA consists of multiple parts: the vision encoder, projection layer, and lang
 
 ### Input
 
-In the original LLaVa, the images should be of resolution 224 X 224 for the vision encoder. In LLaVa 1.5, it was increased to allow images of resolution 336 x 336. At the time, the highest resolution the vision encoder could support was 336 x 336, however, one way they got around was to first partition the image into parts, feed those parts to the vision enconder independently. The output feature maps are stitched back together based on their relative position on the image and finally flattened. An important part is to include the necessary global context since each feature map doesn't "know" about the others. To do this, the image is downsampled to a lower resolution, fed to the vision encoder, and finally the output is concantenated with the rest of the feature maps.
+In the original LLaVa, the images should be of resolution 224 X 224 for the vision encoder. In LLaVa 1.5, it was increased to allow images of resolution 336 x 336. At the time, the highest resolution the vision encoder could support was 336 x 336, however, one way they got around was to first partition the image into parts, feed those parts to the vision encoder independently. The output feature maps are stitched back together based on their relative position on the image and finally flattened. An important part is to include the necessary global context since each feature map doesn't "know" about the others. To do this, the image is downsampled to a lower resolution, fed to the vision encoder, and finally the output is concatenated with the rest of the feature maps.
 
 ### Vision Encoder
 
@@ -20,7 +20,9 @@ In order for the language model to process the visual features of the image, the
 
 ### Language Model Input & Text Generation
 
-The language model takes the projected image embeddings from the projection layer and the embeddings from the word embedding layer. In LLaVa, it's Vicuna, a LLaMa fine-tune on conversation data. As mentioned in the projection layer, the image feature embeddings are concatenated with the word embeddings and passed to the Vicuna. Vicuna's self-attention mechanism works across these embeddings and ultimately generate text output using its decoder.
+The language model takes the projected image embeddings from the projection layer and the embeddings from the word embedding layer. In LLaVa, it's Vicuna, a LLaMa fine-tune on conversation data. As mentioned in the projection layer, the image feature embeddings are concatenated with the word embeddings and passed to the Vicuna. Vicuna's self-attention mechanism works across these embeddings and ultimately generate text output.
+
+![LLaVa Diagram](LLaVa.drawio.png)
 
 ## Task 1.2: Projection Layer Intuition
 
@@ -34,7 +36,7 @@ The reason why they use a simple projection is because it's lightweight and is q
 
 ## Task 2.1: Two-Stage Training
 
-There are two stages to training: feature alignment and visual instruction tuning. For feature alignment, the projection layer learns to project the visual embeddings to the same embedding space as the text embeddings while keeping the same meaning. For the visual instruction tuning, the language model learns to
+<!-- There are two stages to training: feature alignment and visual instruction tuning. For feature alignment, the projection layer learns to project the visual embeddings to the same embedding space as the text embeddings while keeping the same meaning. For the visual instruction tuning, the language model learns to -->
 
 ## Task 2.2: Synthetic Data
 
@@ -46,4 +48,4 @@ The reason why synthetic data was used was because the amount of instruction-fol
 
 2. Alignment happens in the projection layer.
 
-3. There are a few limitations to LLaVa's architecture. The biggest limitation is that the visual feature embeddings and text embeddings are concatenated and then fed to the language model. A stronger approach would be to use gated cross-attention as mentioned in the paper. With gated cross-attention, it learn how text can attend to different visual features and by how much. It allows the model to focus on visual features that are most relevant based on the prompt. This may result in the output not being grounded to specific parts of the image. Other limitations include using full image patches, it cannot process multiple images due to lack of instruction-following data and the limit of the context length, problem-solving capabilities are limited in some domains, and is still susceptible to hallucinations.
+3. There are a few limitations to LLaVa's architecture. The biggest limitation is that the visual feature embeddings and text embeddings are concatenated and then fed to the language model. A stronger approach would be to use gated cross-attention as mentioned in the paper. With gated cross-attention, it learns how text can attend to different visual features and by how much. It allows the model to focus on visual features that are most relevant based on the prompt. This may result in the output not being grounded to specific parts of the image. Other limitations include using full image patches, it cannot process multiple images due to lack of instruction-following data and the limit of the context length, problem-solving capabilities are limited in some domains, and is still susceptible to hallucinations.
