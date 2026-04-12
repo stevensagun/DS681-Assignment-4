@@ -36,7 +36,11 @@ The reason why they use a simple projection is because it's lightweight and is q
 
 ## Task 2.1: Two-Stage Training
 
-<!-- There are two stages to training: feature alignment and visual instruction tuning. For feature alignment, the projection layer learns to project the visual embeddings to the same embedding space as the text embeddings while keeping the same meaning. For the visual instruction tuning, the language model learns to -->
+There are two stages to training: Pre-training for feature alignment and fine-tuning end-to-end.
+
+For feature alignment, a subset of the CC3M dataset was used. This contains image-caption pairs. They used a naive approach by using GPT-4 to generate single-turn instruction-following data for each image in the form of "Human : Xq Xv\<Stop\> Assistant : Xc\<STOP\>" where Xq is a question to be generated, Xv is the image, and Xc is the caption. Finally, for an image, an Xq is randomly sampled and are both fed into LLaVa as inputs. They maximize the likelihood of Xc given the output with the weights of the projection layer. The vision encoder and LLM weights are frozen in this step.
+
+In the fine-tuning stage, the multi-turn conversation data created by the text-only GPT-4/ChatGPT model is used. The full conversation and image is used as inputs.
 
 ## Task 2.2: Synthetic Data
 
