@@ -40,7 +40,9 @@ There are two stages to training: Pre-training for feature alignment and fine-tu
 
 For feature alignment, a subset of the CC3M dataset was used. This contains image-caption pairs. They used a naive approach by using GPT-4 to generate single-turn instruction-following data for each image in the form of "Human : Xq Xv\<Stop\> Assistant : Xc\<STOP\>" where Xq is a question to be generated, Xv is the image, and Xc is the caption. Finally, for an image, an Xq is randomly sampled and are both fed into LLaVa as inputs. They maximize the likelihood of Xc given the output with the weights of the projection layer. The vision encoder and LLM weights are frozen in this step.
 
-In the fine-tuning stage, the multi-turn conversation data created by the text-only GPT-4/ChatGPT model is used. The full conversation and image is used as inputs.
+In the fine-tuning stage, the multi-turn conversation data created by the text-only GPT-4/ChatGPT model is used. The full conversation and image are used as inputs. The model will predict the assistant responses then try to maximize the probability of the actual response conditioned on the image, the conversation data, and the previous tokens. The vision encoder is still frozen for this step while the projection layer and LLM are updated.
+
+In stage 1, the model learns to project the vision features to the same embedding space as the text embeddings. In stage 2, it learns how and what to output based on the image and instructions. Both stages are needed in order to not only answer questions about an image and expect an appropriate response, but for the LLM to be able to work with the image features.
 
 ## Task 2.2: Synthetic Data
 
